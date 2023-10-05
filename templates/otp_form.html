@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}OTP form{% endblock %}
+{% block style %}
+<style>
+    body {
+        background: #f3c538;
+    }
+
+    .forget-pwd>a {
+        color: #dc3545;
+        font-weight: 500;
+    }
+
+    .forget-password .panel-default {
+        padding: 31%;
+        margin-top: -27%;
+    }
+
+    .forget-password .panel-body {
+        padding: 15%;
+        margin-bottom: -50%;
+        background: #fff;
+        border-radius: 5px;
+        -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    img {
+        width: 40%;
+        margin-bottom: 10%;
+    }
+
+    .btnForget {
+        background: #c0392b;
+        border: none;
+    }
+
+    .forget-password .dropdown {
+        width: 100%;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+    }
+
+    .forget-password .dropdown button {
+        width: 100%;
+    }
+
+    .forget-password .dropdown ul {
+        width: 100%;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    function onSubmit(token) {
+        document.getElementById("btnResend").submit();
+    }
+</script>
+{% endblock %}
+{% block content %}
+
+<div class="container forget-password">
+    <div class="row">
+        <div class="col-md-12 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="text-center">
+                        <img src="{{ url_for('static', filename='car-key.png')}}" alt="car-key" border="0">
+                        <h2 class="text-center">Forgot Password?</h2>
+                        <p>Enter the OTP you received.</p>
+                        <form id="register-form" role="form" class="form" method="post" action="">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i
+                                            class="glyphicon glyphicon-envelope color-blue"></i></span>
+                                    <input id="forgetAnswer" name="OTP" placeholder="OTP" class="form-control"
+                                        type="number">
+
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <input name="btnForget" class="btn btn-lg btn-primary btn-block btnForget"
+                                    value="Submit" type="submit">
+                            </div>
+                            <div id="countdownContainer">
+                                <p>Resend OTP in</a> <span id="timer"> </span> <span>seconds</span>
+                            </div>
+
+                            <div id="resetbtnContainer" class="form-group" style="display:none">
+                                <input name="btnResend" id="btnResend"
+                                    class="btn btn-lg btn-primary btn-block btnForget g-recaptcha" value="Resend"
+                                    type="submit" data-sitekey="6LeZ0VEnAAAAAOx65xqWH1G4TJFnM9ikFoWzVBnP"
+                                    data-callback='onSubmit' data-action='submit'>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        var countdown = 120;
+
+        function startTimer() {
+            $('#timer').text(countdown);
+            countdown--;
+
+            if (countdown < 0) {
+                clearInterval(timerInterval);
+                $('#timer').hide();
+                $('#countdownContainer').hide();
+                $('#resetbtnContainer').show();
+            }
+        }
+
+        var timerInterval = setInterval(startTimer, 1000);
+
+        $('#btnResend').click(function () {
+            $.ajax({
+                url: '/execute_function',
+                type: 'POST',
+                success: function (response) {
+                    console.log(response);
+                    // Handle the response here if needed
+                }
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}
